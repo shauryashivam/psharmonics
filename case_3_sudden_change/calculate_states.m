@@ -1,0 +1,14 @@
+function [X_k] = calculate_states(F,H_k,Z,K_cyc,T_vector,X_0_minus)
+% This function calculates the cyclic K_k
+
+X_k = [];
+X_k_minus = X_0_minus;
+for n=0:length(T_vector)-1
+    cyc_n = rem(n,32);
+    dummy_h = H_k(cyc_n+1,:);
+    dummy_k = K_cyc(cyc_n+1,:)';
+    dummy_z = Z(n+1);
+    X_k_plus = X_k_minus + dummy_k*(dummy_z - dummy_h*X_k_minus);
+    X_k =[X_k;X_k_plus'];
+    X_k_minus = F*X_k_plus;
+end
